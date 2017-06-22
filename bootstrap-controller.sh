@@ -7,16 +7,16 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Add controller.openstack.ci.centos.org to hosts file
-if ! grep -q "127.0.0.1 controller.openstack.ci.centos.org" /etc/hosts; then
-    echo "127.0.0.1 controller.openstack.ci.centos.org" >>/etc/hosts
-    echo "Added to hosts file: 127.0.0.1 controller.openstack.ci.centos.org"
+# Add controller.openstack.home to hosts file
+if ! grep -q "127.0.0.1 controller.openstack.home" /etc/hosts; then
+    echo "127.0.0.1 controller.openstack.home" >>/etc/hosts
+    echo "Added to hosts file: 127.0.0.1 controller.openstack.home"
 fi
 
 puppet apply --modulepath=${MODULEPATH} -e "include ::centos_cloud::controller" || exit 1
 
 # Sanity check
-source /root/openrc
+source /root/openrc_admin
 openstack endpoint list
 if [ $? -eq 0 ]; then
   echo 'Sanity check successful!'

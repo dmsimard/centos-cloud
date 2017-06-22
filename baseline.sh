@@ -26,8 +26,8 @@ if ! grep -q "127.0.0.1 $(hostname -f)" /etc/hosts; then
     echo "Added to hosts file: 127.0.0.1 $(hostname -f)"
 fi
 
-yum -y install yum-plugin-priorities centos-release-openstack-newton
-yum -y install puppet python-openstackclient openstack-selinux
+yum -y install yum-plugin-priorities centos-release-openstack-ocata
+yum -y install puppet python-openstackclient openstack-selinux lvm2
 
 # Install OpenStack puppet modules
 yum -y install puppet-keystone puppet-glance puppet-neutron puppet-nova \
@@ -37,6 +37,9 @@ yum -y install puppet-keystone puppet-glance puppet-neutron puppet-nova \
 yum -y install puppet-apache puppet-concat puppet-inifile puppet-kmod \
                puppet-memcached puppet-mysql puppet-ntp puppet-rabbitmq \
                puppet-staging puppet-stdlib puppet-sysctl
+
+# Storage
+systemctl enable --now lvm2-lvmetad
 
 # Install overlay module
 cp -a ${cwd}/puppet/modules/centos_cloud ${MODULEPATH}/

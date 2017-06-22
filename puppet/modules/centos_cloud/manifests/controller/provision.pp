@@ -6,30 +6,39 @@ class centos_cloud::controller::provision (
   ###
   Keystone_user_role['admin@openstack'] -> Nova_flavor<||>
 
-  # Flavors are designed after compute nodes with 32 cores, 64 GB RAM and
-  # 320 GB of disk space allocation with no oversubscription for maximum
-  # performance. This allows for 32 tiny, 16 small or 8 medium VMs.
-  # RAM allocation is truncated on purpose to ensure reserve ~2GB of RAM to
-  # the compute node, especially considering KVM RAM overhead.
-  nova_flavor { 'tiny':
-    ensure => present,
-    ram    => '1940',
-    disk   => '10',
-    vcpus  => '1',
-  }
-
   nova_flavor { 'small':
     ensure => present,
-    ram    => '3875',
+    ram    => '1024',
     disk   => '20',
-    vcpus  => '2',
+    vcpus  => 1
   }
 
   nova_flavor { 'medium':
     ensure => present,
-    ram    => '7750',
+    ram    => '2048',
+    disk   => '30',
+    vcpus  => 2
+  }
+
+  nova_flavor { 'large':
+    ensure => present,
+    ram    => '4096',
     disk   => '40',
-    vcpus  => '4',
+    vcpus  => 4
+  }
+
+  nova_flavor { 'xlarge':
+    ensure => present,
+    ram    => '8192',
+    disk   => '50',
+    vcpus  => 8
+  }
+
+  nova_flavor { 'xxlarge':
+    ensure => present,
+    ram    => '16384',
+    disk   => '100',
+    vcpus  => 16
   }
 
   ###
@@ -45,11 +54,11 @@ class centos_cloud::controller::provision (
   }
 
   neutron_subnet { 'publicsubnet':
-    cidr             => '172.19.0.0/21',
-    gateway_ip       => '172.19.3.254',
+    cidr             => '172.16.0.0/24',
+    gateway_ip       => '172.16.0.1',
     network_name     => 'publicnet',
-    dns_nameservers  => ['172.19.0.12'],
-    allocation_pools => ['start=172.19.4.10,end=172.19.7.250'],
+    dns_nameservers  => ['8.8.8.8', '8.8.4.4'],
+    allocation_pools => ['start=172.16.0.2,end=172.16.0.254'],
   }
 
   ###
@@ -58,28 +67,28 @@ class centos_cloud::controller::provision (
   if $provision_images {
     Keystone_user_role['admin@openstack'] -> Glance_image<||>
 
-    glance_image { 'CentOS 7':
+#    glance_image { 'CentOS 7':
+#      ensure           => present,
+#      container_format => 'bare',
+#      disk_format      => 'qcow2',
+#      is_public        => 'yes',
+#      source           => 'http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2'
+#    }
+
+    glance_image { 'Fedora 25':
       ensure           => present,
       container_format => 'bare',
       disk_format      => 'qcow2',
       is_public        => 'yes',
-      source           => 'http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2'
+      source           => 'https://download.fedoraproject.org/pub/fedora/linux/releases/25/CloudImages/x86_64/images/Fedora-Cloud-Base-25-1.3.x86_64.qcow2'
     }
 
-    glance_image { 'CentOS 6':
-      ensure           => present,
-      container_format => 'bare',
-      disk_format      => 'qcow2',
-      is_public        => 'yes',
-      source           => 'http://cloud.centos.org/centos/6/images/CentOS-6-x86_64-GenericCloud.qcow2'
-    }
-
-    glance_image { 'Fedora 24':
-      ensure           => present,
-      container_format => 'bare',
-      disk_format      => 'qcow2',
-      is_public        => 'yes',
-      source           => 'https://download.fedoraproject.org/pub/fedora/linux/releases/24/CloudImages/x86_64/images/Fedora-Cloud-Base-24-1.2.x86_64.qcow2'
-    }
+#    glance_image { 'Ubuntu 16.04':
+#      ensure           => present,
+#      container_format => 'bare',
+#      disk_format      => 'qcow2',
+#      is_public        => 'yes',
+#      source           => 'https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img'
+#    }
   }
 }

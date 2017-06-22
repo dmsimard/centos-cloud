@@ -15,7 +15,8 @@ class centos_cloud::server::packages {
     'tcpdump',
     'wget',
     'mtr',
-    'nmap'
+    'nmap',
+    'lvm2'
   ]:
     ensure => 'latest'
   }

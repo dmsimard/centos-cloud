@@ -10,7 +10,7 @@ fi
 puppet apply --modulepath=${MODULEPATH} -e "include ::centos_cloud::compute" || exit 1
 
 # Sanity check
-source /root/openrc
+source /root/openrc_admin
 openstack hypervisor list | grep -i $(hostname)
 if [ $? -eq 0 ]; then 
   echo 'Sanity check successful!'

@@ -9,4 +9,9 @@ class centos_cloud::server {
     'net.ipv4.tcp_keepalive_intvl':  value => '1';
     'net.ipv4.tcp_keepalive_probes': value => '5';
   }
+
+  service { 'lvm2-lvmetad':
+    ensure => running,
+    enable => true,
+  }
 }
