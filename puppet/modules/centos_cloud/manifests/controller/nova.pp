@@ -25,6 +25,7 @@ class centos_cloud::controller::nova (
     require              => Class['::rabbitmq'],
     write_permission     => '.*'
   }
+  Rabbitmq_user_permissions['nova@/'] -> Service<| tag == 'nova-service' |>
 
   $transport_url = os_transport_url({
     'host'      => $::centos_cloud::params::controller,
