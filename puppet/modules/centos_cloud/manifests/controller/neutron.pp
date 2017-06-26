@@ -23,6 +23,8 @@ class centos_cloud::controller::neutron (
     write_permission     => '.*'
   }
 
+  Rabbitmq_user_permissions['neutron@/'] -> Service<| tag == 'neutron-service' |>
+
   $transport_url = os_transport_url({
     'host'      => $::centos_cloud::params::controller,
     'password'  => $password,

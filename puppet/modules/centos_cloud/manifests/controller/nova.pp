@@ -128,4 +128,7 @@ class centos_cloud::controller::nova (
   include ::nova::scheduler::filter
 
   include ::nova::cell_v2::simple_setup
+
+  Keystone_endpoint <||> -> Service['nova-api']
+  Keystone_service <||> -> Service['nova-api']
 }
